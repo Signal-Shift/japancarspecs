@@ -46,3 +46,9 @@ next-env.d.ts
 
 # Claude Code — local settings, sessions, hooks (never commit)
 .claude/
+
+# AI assistant instruction files at repo root (never commit)
+CLAUDE.md
+claude.md
+AGENTS.md
+agents.md
