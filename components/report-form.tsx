@@ -1,0 +1,259 @@
+"use client"
+
+import * as React from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { submitReportRequest } from "@/lib/api"
+import type { ReportFormData } from "@/lib/types"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+const currentYear = new Date().getFullYear()
+const yearOptions = Array.from({ length: 40 }, (_, i) =>
+  String(currentYear - i)
+)
+
+const reportFormSchema = z.object({
+  fullName: z.string().min(2, "Enter your full name"),
+  email: z.string().email("Enter a valid email address"),
+  chassisNumber: z
+    .string()
+    .min(4, "Chassis / VIN is too short")
+    .max(32, "Chassis / VIN is too long"),
+  make: z.string().min(1, "Make is required"),
+  model: z.string().min(1, "Model is required"),
+  year: z.string().min(1, "Select a year"),
+  notes: z.string().optional(),
+})
+
+type ReportFormValues = z.infer<typeof reportFormSchema>
+
+export function ReportForm() {
+  const [submitError, setSubmitError] = React.useState<string | null>(null)
+
+  const form = useForm<ReportFormValues>({
+    resolver: zodResolver(reportFormSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      chassisNumber: "",
+      make: "",
+      model: "",
+      year: "",
+      notes: "",
+    },
+  })
+
+  async function onSubmit(values: ReportFormValues) {
+    setSubmitError(null)
+    try {
+      const payload: ReportFormData = {
+        fullName: values.fullName,
+        email: values.email,
+        chassisNumber: values.chassisNumber,
+        make: values.make,
+        model: values.model,
+        year: values.year,
+        notes: values.notes || undefined,
+      }
+      const result = await submitReportRequest(payload)
+      if (result.success && result.checkoutUrl) {
+        window.location.href = result.checkoutUrl
+        return
+      }
+      setSubmitError("Something went wrong. Please try again.")
+    } catch {
+      setSubmitError("Something went wrong. Please try again.")
+    }
+  }
+
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = form
+
+  return (
+    <Card className="mx-auto max-w-xl rounded-xl border-border/80 bg-card/80 shadow-lg">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold tracking-tight">
+          Request a specification report
+        </CardTitle>
+        <CardDescription>
+          Tell us about the vehicle. After you submit, you&apos;ll be redirected
+          to secure checkout. Your report arrives by email shortly after
+          payment.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-5"
+          noValidate
+        >
+          <div className="space-y-2">
+            <Label htmlFor="fullName">Full name</Label>
+            <Input
+              id="fullName"
+              className="rounded-md"
+              aria-invalid={!!errors.fullName}
+              {...register("fullName")}
+            />
+            {errors.fullName && (
+              <p className="text-sm text-destructive" role="alert">
+                {errors.fullName.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email address</Label>
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              className="rounded-md"
+              aria-invalid={!!errors.email}
+              {...register("email")}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive" role="alert">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="chassisNumber">Chassis number / VIN</Label>
+            <Input
+              id="chassisNumber"
+              className="rounded-md font-mono text-sm"
+              placeholder="e.g. JZA80-00xxxx"
+              aria-invalid={!!errors.chassisNumber}
+              {...register("chassisNumber")}
+            />
+            {errors.chassisNumber && (
+              <p className="text-sm text-destructive" role="alert">
+                {errors.chassisNumber.message}
+              </p>
+            )}
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="make">Make</Label>
+              <Input
+                id="make"
+                placeholder="Toyota"
+                className="rounded-md"
+                aria-invalid={!!errors.make}
+                {...register("make")}
+              />
+              {errors.make && (
+                <p className="text-sm text-destructive" role="alert">
+                  {errors.make.message}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="model">Model</Label>
+              <Input
+                id="model"
+                placeholder="Supra"
+                className="rounded-md"
+                aria-invalid={!!errors.model}
+                {...register("model")}
+              />
+              {errors.model && (
+                <p className="text-sm text-destructive" role="alert">
+                  {errors.model.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="year">Year</Label>
+            <Controller
+              name="year"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  value={field.value === "" ? null : field.value}
+                  onValueChange={(v) =>
+                    field.onChange(
+                      typeof v === "string" ? v : String(v ?? "")
+                    )
+                  }
+                >
+                  <SelectTrigger
+                    id="year"
+                    className="w-full rounded-md"
+                    aria-invalid={!!errors.year}
+                  >
+                    <SelectValue placeholder="Select model year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {yearOptions.map((y) => (
+                      <SelectItem key={y} value={y}>
+                        {y}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.year && (
+              <p className="text-sm text-destructive" role="alert">
+                {errors.year.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="notes">Additional notes (optional)</Label>
+            <Textarea
+              id="notes"
+              className="min-h-[100px] rounded-md"
+              placeholder="Auction grade, mileage claims, or anything we should double-check…"
+              {...register("notes")}
+            />
+          </div>
+
+          {submitError && (
+            <p className="text-sm text-destructive" role="alert">
+              {submitError}
+            </p>
+          )}
+
+          <Button
+            type="submit"
+            className="w-full rounded-md sm:w-auto"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Processing…" : "Continue to checkout"}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  )
+}

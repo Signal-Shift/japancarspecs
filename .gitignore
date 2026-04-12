@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Cursor — project/agent config and local IDE state (never commit)
+.cursor/
+.cursorrules
+
+# Claude Code — local settings, sessions, hooks (never commit)
+.claude/
