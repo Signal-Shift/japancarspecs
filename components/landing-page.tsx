@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 
+import { HeroSearch } from "@/components/hero-search"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -18,12 +19,12 @@ export function LandingPage() {
     <div className="overflow-x-hidden">
       <section className="relative border-b border-border/60">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(245,158,11,0.12),transparent)]" />
-        <div className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-28 lg:py-32">
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-4 py-24 sm:px-6 sm:py-28 lg:grid-cols-[1fr,minmax(0,28rem)] lg:items-start lg:py-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl"
+            className="max-w-3xl lg:pt-4"
           >
             <p className="text-sm font-medium tracking-wide text-primary">
               JapanCarSpecs
@@ -37,14 +38,15 @@ export function LandingPage() {
               report by email. Built for importers, dealers, and enthusiasts who
               need facts before they wire money.
             </p>
-            <div className="mt-10 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3 lg:hidden">
               <Button
                 nativeButton={false}
-                render={<Link href="/reports" />}
+                render={<Link href="/sample" />}
+                variant="outline"
                 size="lg"
                 className="rounded-md px-6"
               >
-                Get a report
+                Sample report
               </Button>
               <Button
                 nativeButton={false}
@@ -52,6 +54,34 @@ export function LandingPage() {
                 variant="outline"
                 size="lg"
                 className="rounded-md px-6"
+              >
+                Read the blog
+              </Button>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.08 }}
+            className="lg:justify-self-end lg:w-full"
+          >
+            <HeroSearch />
+            <div className="mt-4 hidden flex-wrap gap-3 lg:flex">
+              <Button
+                nativeButton={false}
+                render={<Link href="/sample" />}
+                variant="ghost"
+                size="sm"
+                className="rounded-md text-muted-foreground"
+              >
+                Sample report
+              </Button>
+              <Button
+                nativeButton={false}
+                render={<Link href="/blog" />}
+                variant="ghost"
+                size="sm"
+                className="rounded-md text-muted-foreground"
               >
                 Read the blog
               </Button>
@@ -154,7 +184,14 @@ export function LandingPage() {
             <p className="mt-3 text-muted-foreground">
               Vehicle specification report — tailored to your chassis, with the
               level of detail you need to import, register, or negotiate. Full
-              pricing appears at checkout when we launch live payments.
+              pricing appears at checkout when we launch live payments.{" "}
+              <Link
+                href="/sample"
+                className="font-medium text-primary hover:underline"
+              >
+                See a sample layout
+              </Link>
+              .
             </p>
           </div>
           <div className="shrink-0 text-left md:text-right">
