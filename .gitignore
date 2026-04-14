@@ -52,3 +52,6 @@ CLAUDE.md
 claude.md
 AGENTS.md
 agents.md
+
+# GitHub ruleset JSON payloads (apply via gh api / UI; keep local)
+.github/rulesets/

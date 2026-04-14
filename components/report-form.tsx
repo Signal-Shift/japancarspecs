@@ -1,12 +1,15 @@
 "use client"
 
 import * as React from "react"
+import { Suspense } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useSearchParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { submitReportRequest } from "@/lib/api"
 import type { ReportFormData } from "@/lib/types"
+import { getModelYearOptions, isValidModelYear } from "@/lib/vehicle-years"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -26,10 +29,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-const currentYear = new Date().getFullYear()
-const yearOptions = Array.from({ length: 40 }, (_, i) =>
-  String(currentYear - i)
-)
+const yearOptions = getModelYearOptions()
 
 const reportFormSchema = z.object({
   fullName: z.string().min(2, "Enter your full name"),
@@ -46,21 +46,44 @@ const reportFormSchema = z.object({
 
 type ReportFormValues = z.infer<typeof reportFormSchema>
 
-export function ReportForm() {
+const defaultFormValues: ReportFormValues = {
+  fullName: "",
+  email: "",
+  chassisNumber: "",
+  make: "",
+  model: "",
+  year: "",
+  notes: "",
+}
+
+function ReportFormFields() {
+  const searchParams = useSearchParams()
+  const prefilledRef = React.useRef(false)
   const [submitError, setSubmitError] = React.useState<string | null>(null)
 
   const form = useForm<ReportFormValues>({
     resolver: zodResolver(reportFormSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      chassisNumber: "",
-      make: "",
-      model: "",
-      year: "",
-      notes: "",
-    },
+    defaultValues: defaultFormValues,
   })
+
+  React.useEffect(() => {
+    if (prefilledRef.current) return
+    const make = searchParams.get("make")?.trim()
+    const model = searchParams.get("model")?.trim()
+    const yearParam = searchParams.get("year")?.trim()
+    if (!make && !model && !yearParam) return
+
+    const year =
+      yearParam && isValidModelYear(yearParam) ? yearParam : defaultFormValues.year
+
+    form.reset({
+      ...defaultFormValues,
+      ...(make ? { make } : {}),
+      ...(model ? { model } : {}),
+      ...(year ? { year } : {}),
+    })
+    prefilledRef.current = true
+  }, [searchParams, form])
 
   async function onSubmit(values: ReportFormValues) {
     setSubmitError(null)
@@ -255,5 +278,23 @@ export function ReportForm() {
         </form>
       </CardContent>
     </Card>
+  )
+}
+
+function ReportFormFallback() {
+  return (
+    <Card className="mx-auto max-w-xl rounded-xl border-border/80 bg-card/80 shadow-lg">
+      <CardContent className="py-12 text-center text-sm text-muted-foreground">
+        Loading form…
+      </CardContent>
+    </Card>
+  )
+}
+
+export function ReportForm() {
+  return (
+    <Suspense fallback={<ReportFormFallback />}>
+      <ReportFormFields />
+    </Suspense>
   )
 }
