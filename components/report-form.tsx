@@ -9,6 +9,10 @@ import { z } from "zod"
 
 import { submitReportRequest } from "@/lib/api"
 import type { ReportFormData } from "@/lib/types"
+import {
+  getMakeOptionsWithCurrent,
+  getModelOptionsWithCurrent,
+} from "@/lib/vehicle-catalog"
 import { getModelYearOptions, isValidModelYear } from "@/lib/vehicle-years"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -112,8 +116,24 @@ function ReportFormFields() {
     register,
     control,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = form
+
+  const watchedMake = watch("make")
+  const watchedModel = watch("model")
+
+  const makeOptions = React.useMemo(
+    () => getMakeOptionsWithCurrent(watchedMake ?? ""),
+    [watchedMake]
+  )
+
+  const modelOptions = React.useMemo(
+    () =>
+      getModelOptionsWithCurrent(watchedMake ?? "", watchedModel ?? ""),
+    [watchedMake, watchedModel]
+  )
 
   return (
     <Card className="mx-auto max-w-xl rounded-xl border-border/80 bg-card/80 shadow-lg">
@@ -184,12 +204,33 @@ function ReportFormFields() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="make">Make</Label>
-              <Input
-                id="make"
-                placeholder="Toyota"
-                className="rounded-md"
-                aria-invalid={!!errors.make}
-                {...register("make")}
+              <Controller
+                name="make"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={(v) => {
+                      field.onChange(typeof v === "string" ? v : "")
+                      setValue("model", "")
+                    }}
+                  >
+                    <SelectTrigger
+                      id="make"
+                      className="w-full rounded-md"
+                      aria-invalid={!!errors.make}
+                    >
+                      <SelectValue placeholder="Select manufacturer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {makeOptions.map((m) => (
+                        <SelectItem key={m} value={m}>
+                          {m}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               />
               {errors.make && (
                 <p className="text-sm text-destructive" role="alert">
@@ -199,12 +240,39 @@ function ReportFormFields() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="model">Model</Label>
-              <Input
-                id="model"
-                placeholder="Supra"
-                className="rounded-md"
-                aria-invalid={!!errors.model}
-                {...register("model")}
+              <Controller
+                name="model"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={(v) =>
+                      field.onChange(typeof v === "string" ? v : "")
+                    }
+                    disabled={!watchedMake}
+                  >
+                    <SelectTrigger
+                      id="model"
+                      className="w-full rounded-md"
+                      aria-invalid={!!errors.model}
+                    >
+                      <SelectValue
+                        placeholder={
+                          watchedMake
+                            ? "Select model"
+                            : "Select manufacturer first"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {modelOptions.map((m) => (
+                        <SelectItem key={m} value={m}>
+                          {m}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               />
               {errors.model && (
                 <p className="text-sm text-destructive" role="alert">
@@ -221,7 +289,7 @@ function ReportFormFields() {
               control={control}
               render={({ field }) => (
                 <Select
-                  value={field.value === "" ? null : field.value}
+                  value={field.value}
                   onValueChange={(v) =>
                     field.onChange(
                       typeof v === "string" ? v : String(v ?? "")

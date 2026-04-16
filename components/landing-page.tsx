@@ -197,7 +197,7 @@ export function LandingPage() {
           <div className="shrink-0 text-left md:text-right">
             <p className="text-sm text-muted-foreground">Starting from</p>
             <p className="mt-1 text-3xl font-semibold tabular-nums text-primary">
-              €29
+              €9.99
             </p>
             <p className="text-xs text-muted-foreground">placeholder — TBC</p>
             <Button
