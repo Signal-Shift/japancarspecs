@@ -19,7 +19,7 @@ const faqs: { q: string; a: ReactNode }[] = [
     a: (
       <>
         We show the exact price at Stripe Checkout before you pay. The site may
-        display a guide figure (for example from €29); final amounts are
+        display a guide figure (for example from €9.99); final amounts are
         confirmed in checkout.
       </>
     ),

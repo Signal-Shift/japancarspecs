@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -14,28 +13,44 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { getMakeOptions, getModelOptions } from "@/lib/vehicle-catalog"
 import { getModelYearOptions } from "@/lib/vehicle-years"
 
 const yearOptions = getModelYearOptions()
 
 export function HeroSearch() {
   const router = useRouter()
-  const [make, setMake] = React.useState("")
-  const [model, setModel] = React.useState("")
-  const [year, setYear] = React.useState<string | null>(null)
+  const [make, setMakeInternal] = React.useState("")
+  const [model, setModelInternal] = React.useState("")
+
+  const setMake = React.useCallback((value: string) => {
+    setMakeInternal(value)
+    setModelInternal("")
+  }, [])
+
+  const setModel = React.useCallback((value: string) => {
+    setModelInternal(value)
+  }, [])
+
+  const makeOptions = React.useMemo(() => getMakeOptions(), [])
+  const modelOptions = React.useMemo(
+    () => getModelOptions(make),
+    [make]
+  )
+  const [year, setYear] = React.useState("")
   const [error, setError] = React.useState<string | null>(null)
 
   function handleContinue(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     if (!make.trim() || !model.trim()) {
-      setError("Enter both make and model to continue.")
+      setError("Select both manufacturer and model to continue.")
       return
     }
     const params = new URLSearchParams()
     params.set("make", make.trim())
     params.set("model", model.trim())
-    if (year) params.set("year", year)
+    if (year.trim()) params.set("year", year.trim())
     router.push(`/reports?${params.toString()}`)
   }
 
@@ -45,41 +60,62 @@ export function HeroSearch() {
         <form onSubmit={handleContinue} className="flex flex-col gap-4">
           <div>
             <p className="text-sm font-medium text-foreground">
-              Start your report            </p>
+              Start your report
+            </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              This pre-fills the order form — it does not run a free lookup. You
-              still add chassis details and pay at checkout.
+              Vehicle look up, search by Manufacturer and Model to match your exact vehicle.
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="hero-make">Manufacturer</Label>
-              <Input
-                id="hero-make"
-                placeholder="e.g. Toyota"
-                className="rounded-md"
+              <Select
                 value={make}
-                onChange={(e) => setMake(e.target.value)}
-                autoComplete="organization"
-              />
+                onValueChange={(v) => setMake(typeof v === "string" ? v : "")}
+              >
+                <SelectTrigger id="hero-make" className="w-full rounded-md">
+                  <SelectValue placeholder="Select manufacturer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {makeOptions.map((m) => (
+                    <SelectItem key={m} value={m}>
+                      {m}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="hero-model">Model</Label>
-              <Input
-                id="hero-model"
-                placeholder="e.g. Supra"
-                className="rounded-md"
+              <Select
                 value={model}
-                onChange={(e) => setModel(e.target.value)}
-                autoComplete="off"
-              />
+                onValueChange={(v) => setModel(typeof v === "string" ? v : "")}
+                disabled={!make}
+              >
+                <SelectTrigger id="hero-model" className="w-full rounded-md">
+                  <SelectValue
+                    placeholder={
+                      make ? "Select model" : "Select manufacturer first"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {modelOptions.map((m) => (
+                    <SelectItem key={m} value={m}>
+                      {m}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="hero-year">Year (optional)</Label>
               <Select
                 value={year}
-                onValueChange={(v) => setYear(typeof v === "string" ? v : null)}
+                onValueChange={(v) =>
+                  setYear(typeof v === "string" ? v : "")
+                }
               >
                 <SelectTrigger id="hero-year" className="w-full rounded-md">
                   <SelectValue placeholder="Select year if known" />
