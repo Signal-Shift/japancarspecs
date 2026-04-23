@@ -9,7 +9,6 @@ const DEFAULT_FETCH_TIMEOUT_MS = 15_000
 const DEFAULT_ALLOWED_CHECKOUT_HOSTS = [
   "checkout.stripe.com",
   "buy.stripe.com",
-  "stripe.com",
 ] as const
 
 function getAllowedCheckoutHosts(): string[] {
@@ -17,7 +16,9 @@ function getAllowedCheckoutHosts(): string[] {
     process.env.NEXT_PUBLIC_CHECKOUT_REDIRECT_HOSTS?.split(",")
       .map((h) => h.trim().toLowerCase())
       .filter(Boolean) ?? []
-  return [...DEFAULT_ALLOWED_CHECKOUT_HOSTS, ...fromEnv]
+  const devOnly =
+    process.env.NODE_ENV !== "production" ? (["stripe.com"] as const) : []
+  return [...DEFAULT_ALLOWED_CHECKOUT_HOSTS, ...devOnly, ...fromEnv]
 }
 
 /** Only https URLs on an allowlisted host may be used for redirect. */
