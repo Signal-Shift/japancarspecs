@@ -106,15 +106,9 @@ function ReportFormFields() {
         window.location.href = result.checkoutUrl
         return
       }
-      setSubmitError(
-        result.success === false
-          ? result.error
-          : "Checkout could not be started. Please try again."
-      )
+      setSubmitError("Something went wrong. Please try again.")
     } catch {
-      setSubmitError(
-        "Something went wrong. Please try again or contact us if it keeps happening."
-      )
+      setSubmitError("Something went wrong. Please try again.")
     }
   }
 
