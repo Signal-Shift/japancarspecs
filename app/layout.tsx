@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
+import { siteUrl } from "@/lib/site"
 
 import "./globals.css"
 
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   },
   description:
     "Order a detailed specification report for your Japanese import. Pay securely with Stripe and receive results by email within minutes.",
-  metadataBase: new URL("https://japancarspecs.com"),
+  metadataBase: new URL(siteUrl),
 }
 
 export default function RootLayout({
