@@ -5,7 +5,7 @@ import { siteUrl } from "@/lib/site"
 export const metadata: Metadata = {
   title: "Order a Japanese import specification report",
   description:
-    "Pay securely and receive a chassis-based vehicle specification report by email—built for importers, dealers, and buyers who need factory-correct context before they commit.",
+    "Pay securely and receive a chassis-based technical data report by email. Built for importers, dealers, and buyers who need factory-correct context before they commit.",
   alternates: {
     canonical: `${siteUrl}/reports/`,
   },

@@ -6,7 +6,7 @@ type BrokenCarIllustrationProps = {
   className?: string
 }
 
-/** Broken car icon — Cahya Kurniawan / Noun Project (attribution on 404 page). */
+/** Broken car icon. Cahya Kurniawan / Noun Project (attribution on 404 page). */
 export function BrokenCarIllustration({ className }: BrokenCarIllustrationProps) {
   return (
     <svg

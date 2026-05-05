@@ -11,7 +11,7 @@ type RouteFallbackShellProps = {
 }
 
 /**
- * Shared layout for error boundary and 404 — brand link, spacing, max width.
+ * Shared layout for error boundary and 404: brand link, spacing, max width.
  */
 export function RouteFallbackShell({
   children,

@@ -10,9 +10,9 @@ export default function ReportsPage() {
           Order your report
         </h1>
         <p className="mt-3 text-muted-foreground">
-          One clear price. No guesswork. We compile factory-correct specs and
-          context for your chassis so you can buy, import, or insure with
-          confidence.
+          Retail checkout for a chassis-led report. You get structured technical
+          data with per-field coverage metadata (see our Ireland-first positioning
+          sitewide). This is not a manufacturer paperwork pack from the OEM.
         </p>
       </div>
       <ReportForm />

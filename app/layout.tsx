@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import { Footer } from "@/components/footer"
 import { Navbar } from "@/components/navbar"
+import { ThemeProvider } from "@/components/theme-provider"
 import { siteUrl } from "@/lib/site"
 
 import "./globals.css"
@@ -19,11 +20,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "JapanCarSpecs — Japanese import vehicle specification reports",
+    default: "JapanCarSpecs: Japanese import vehicle technical data reports",
     template: "%s | JapanCarSpecs",
   },
   description:
-    "Order a detailed specification report for your Japanese import. Pay securely with Stripe and receive results by email within minutes.",
+    "JDM Technical Data Reports for Japanese imports, with honest MLIT coverage metadata. Retail checkout and importer API. Ireland-first positioning.",
   metadataBase: new URL(siteUrl),
 }
 
@@ -35,12 +36,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ThemeProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   )

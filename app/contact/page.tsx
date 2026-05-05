@@ -24,8 +24,8 @@ export default function ContactPage() {
             Contact
           </h1>
           <p className="mt-4 text-muted-foreground">
-            We are wiring up inbound messaging. For now, use the details below
-            — or go straight to the report form if you are ready to order.
+            We are wiring up inbound messaging. For now, use the details below,
+            or go straight to the report form if you are ready to order.
           </p>
           <dl className="mt-8 space-y-4 text-sm">
             <div>
@@ -52,8 +52,8 @@ export default function ContactPage() {
           <CardHeader>
             <CardTitle className="text-lg">Send a message</CardTitle>
             <CardDescription>
-              This form is a placeholder — submit is disabled until backend mail
-              is connected.
+              This form is a placeholder; submit is disabled until backend mail is
+              connected.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

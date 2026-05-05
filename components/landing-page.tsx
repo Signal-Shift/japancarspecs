@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { MotionConfig, motion } from "framer-motion"
 
 import { HeroSearch } from "@/components/hero-search"
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,7 @@ const fadeUp = {
 
 export function LandingPage() {
   return (
+    <MotionConfig reducedMotion="user">
     <div className="overflow-x-hidden">
       <section className="relative border-b border-border/60">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(245,158,11,0.12),transparent)]" />
@@ -30,13 +31,19 @@ export function LandingPage() {
               JapanCarSpecs
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Specification reports for Japanese imports —{" "}
-              <span className="text-primary">minutes</span>, not weeks.
+              Technical data reports for Japanese imports.{" "}
+              <span className="text-primary">Ireland-first</span>, minutes not
+              weeks.
             </h1>
             <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-              Submit your chassis details, pay securely, and get a detailed
-              report by email. Built for importers, dealers, and enthusiasts who
-              need facts before they wire money.
+              <strong className="font-medium text-foreground">
+                JDM Technical Data Reports
+              </strong>{" "}
+              give structured factory-oriented specs where MLIT bulk data
+              supports each row, with per-field coverage metadata so gaps stay
+              clear. Built for importers lining up Revenue and NCTS context. Not
+              a manufacturer paperwork pack from the OEM; every line states what
+              we could substantiate.
             </p>
             <div className="mt-8 flex flex-wrap gap-3 lg:hidden">
               <Button
@@ -98,8 +105,8 @@ export function LandingPage() {
           How it works
         </motion.h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-muted-foreground">
-          Three steps from chassis number to clarity — no accounts, no waiting
-          on callbacks.
+          Three steps: retail checkout today, importer API and volume plans
+          rolling out alongside the same JSON contract.
         </p>
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {[
@@ -111,12 +118,12 @@ export function LandingPage() {
             {
               step: "02",
               title: "Pay securely",
-              body: "Checkout runs on Stripe. Your card never touches our servers — you’re redirected to their hosted flow.",
+              body: "Checkout runs on Stripe. Your card never touches our servers; you are redirected to their hosted flow.",
             },
             {
               step: "03",
               title: "Receive your report",
-              body: "We email your specification report within minutes. Same-day peace of mind for your next bid or purchase.",
+              body: "Email delivery for retail orders. Importers can pull the same structure via API (stub today; MLIT-backed gateway next) with per-field coverage metadata.",
             },
           ].map((item, i) => (
             <motion.div key={item.step} {...fadeUp} transition={{ delay: i * 0.08 }}>
@@ -145,15 +152,15 @@ export function LandingPage() {
           {[
             {
               title: "Instant payment",
-              body: "Stripe Checkout — trusted, fast, and familiar to buyers worldwide.",
+              body: "Stripe Checkout: trusted, fast, and familiar to buyers worldwide.",
             },
             {
               title: "Delivered in minutes",
-              body: "Typical turnaround is 5–10 minutes by email so you can move before the auction ends.",
+              body: "Typical turnaround is 5 to 10 minutes by email so you can move before the auction ends.",
             },
             {
-              title: "Comprehensive specs",
-              body: "Factory-correct equipment, codes, and context — not a vague one-page printout.",
+              title: "Honest field coverage",
+              body: "Filled, partial, missing, not applicable, or admin, aligned to what MLIT XLS and PDF sources actually contain, so you see limits instead of guesswork.",
             },
           ].map((item, i) => (
             <motion.div
@@ -179,37 +186,54 @@ export function LandingPage() {
         >
           <div className="max-w-xl">
             <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-              One product. One price.
+              Retail from €9.99, importer API on request
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Vehicle specification report — tailored to your chassis, with the
-              level of detail you need to import, register, or negotiate. Full
-              pricing appears at checkout when we launch live payments.{" "}
+              One-off buyers still use Stripe Checkout for a chassis-led report.
+              Trade customers can{" "}
+              <Link href="/importers" className="font-medium text-primary hover:underline">
+                open an importer account
+              </Link>{" "}
+              for API keys, usage metering, and the JDM Technical Data Report
+              JSON schema, same shape once our report gateway goes live.{" "}
               <Link
                 href="/sample"
                 className="font-medium text-primary hover:underline"
               >
-                See a sample layout
+                Sample layout
               </Link>
               .
             </p>
           </div>
           <div className="shrink-0 text-left md:text-right">
-            <p className="text-sm text-muted-foreground">Starting from</p>
+            <p className="text-sm text-muted-foreground">Retail guide from</p>
             <p className="mt-1 text-3xl font-semibold tabular-nums text-primary">
               €9.99
             </p>
-            <p className="text-xs text-muted-foreground">placeholder — TBC</p>
-            <Button
-              nativeButton={false}
-              render={<Link href="/reports" />}
-              className="mt-6 rounded-md"
-            >
-              Request a report
-            </Button>
+            <p className="text-xs text-muted-foreground">
+              guide, confirm in checkout
+            </p>
+            <div className="mt-6 flex flex-col gap-2 md:items-end">
+              <Button
+                nativeButton={false}
+                render={<Link href="/reports" />}
+                className="rounded-md"
+              >
+                Request a report
+              </Button>
+              <Button
+                nativeButton={false}
+                render={<Link href="/signup" />}
+                variant="outline"
+                className="rounded-md"
+              >
+                Importer sign up
+              </Button>
+            </div>
           </div>
         </motion.div>
       </section>
     </div>
+    </MotionConfig>
   )
 }
