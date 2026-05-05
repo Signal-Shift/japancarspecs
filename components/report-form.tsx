@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Suspense } from "react"
+import { Loader2 } from "lucide-react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useSearchParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
@@ -14,7 +15,15 @@ import {
   getModelOptionsWithCurrent,
 } from "@/lib/vehicle-catalog"
 import { getModelYearOptions, isValidModelYear } from "@/lib/vehicle-years"
+import { FormFieldShell, FormSectionTitle } from "@/components/form-field-shell"
 import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -25,13 +34,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 
 const yearOptions = getModelYearOptions()
 
@@ -60,10 +62,18 @@ const defaultFormValues: ReportFormValues = {
   notes: "",
 }
 
+function ariaDescribedBy(
+  ...ids: Array<string | undefined | false | null>
+): string | undefined {
+  const joined = ids.filter(Boolean).join(" ").trim()
+  return joined === "" ? undefined : joined
+}
+
 function ReportFormFields() {
   const searchParams = useSearchParams()
   const prefilledRef = React.useRef(false)
   const [submitError, setSubmitError] = React.useState<string | null>(null)
+  const fid = React.useId()
 
   const form = useForm<ReportFormValues>({
     resolver: zodResolver(reportFormSchema),
@@ -127,6 +137,7 @@ function ReportFormFields() {
     formState: { errors, isSubmitting },
   } = form
 
+  const watchedChassis = watch("chassisNumber") ?? ""
   const watchedMake = watch("make")
   const watchedModel = watch("model")
 
@@ -141,8 +152,23 @@ function ReportFormFields() {
     [watchedMake, watchedModel]
   )
 
+  const fullNameId = `${fid}-fullName`
+  const fullNameErrorId = `${fid}-fullName-error`
+  const emailId = `${fid}-email`
+  const emailErrorId = `${fid}-email-error`
+  const chassisId = `${fid}-chassis`
+  const chassisCounterId = `${fid}-chassis-counter`
+  const chassisErrorId = `${fid}-chassis-error`
+  const makeId = `${fid}-make`
+  const makeErrorId = `${fid}-make-error`
+  const modelId = `${fid}-model`
+  const modelErrorId = `${fid}-model-error`
+  const yearId = `${fid}-year`
+  const yearErrorId = `${fid}-year-error`
+  const notesId = `${fid}-notes`
+
   return (
-    <Card className="mx-auto max-w-xl rounded-xl border-border/80 bg-card/80 shadow-lg">
+    <Card className="mx-auto max-w-xl rounded-xl border-border/80 bg-card/80 shadow-lg transition-shadow duration-300 hover:shadow-xl hover:shadow-primary/5">
       <CardHeader>
         <CardTitle className="text-xl font-semibold tracking-tight">
           Request a specification report
@@ -156,198 +182,278 @@ function ReportFormFields() {
       <CardContent>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-5"
+          className="flex flex-col gap-8"
           noValidate
         >
-          <div className="space-y-2">
-            <Label htmlFor="fullName">Full name</Label>
-            <Input
-              id="fullName"
-              className="rounded-md"
-              aria-invalid={!!errors.fullName}
-              {...register("fullName")}
-            />
-            {errors.fullName && (
-              <p className="text-sm text-destructive" role="alert">
-                {errors.fullName.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Email address</Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              className="rounded-md"
-              aria-invalid={!!errors.email}
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive" role="alert">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="chassisNumber">Chassis number / VIN</Label>
-            <Input
-              id="chassisNumber"
-              className="rounded-md font-mono text-sm"
-              placeholder="e.g. JZA80-00xxxx"
-              aria-invalid={!!errors.chassisNumber}
-              {...register("chassisNumber")}
-            />
-            {errors.chassisNumber && (
-              <p className="text-sm text-destructive" role="alert">
-                {errors.chassisNumber.message}
-              </p>
-            )}
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="make">Make</Label>
-              <Controller
-                name="make"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    value={field.value}
-                    onValueChange={(v) => {
-                      field.onChange(typeof v === "string" ? v : "")
-                      setValue("model", "")
-                    }}
+          <div className="space-y-4">
+            <FormSectionTitle step="1" stepNumber={1} totalSteps={3}>
+              Your details
+            </FormSectionTitle>
+            <FormFieldShell className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor={fullNameId}>Full name</Label>
+                <Input
+                  id={fullNameId}
+                  className="rounded-md"
+                  aria-invalid={!!errors.fullName}
+                  aria-describedby={ariaDescribedBy(
+                    errors.fullName && fullNameErrorId
+                  )}
+                  {...register("fullName")}
+                />
+                {errors.fullName ? (
+                  <p
+                    id={fullNameErrorId}
+                    className="text-sm text-destructive"
+                    role="alert"
                   >
-                    <SelectTrigger
-                      id="make"
-                      className="w-full rounded-md"
-                      aria-invalid={!!errors.make}
-                    >
-                      <SelectValue placeholder="Select manufacturer" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {makeOptions.map((m) => (
-                        <SelectItem key={m} value={m}>
-                          {m}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.make && (
-                <p className="text-sm text-destructive" role="alert">
-                  {errors.make.message}
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="model">Model</Label>
-              <Controller
-                name="model"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    value={field.value}
-                    onValueChange={(v) =>
-                      field.onChange(typeof v === "string" ? v : "")
-                    }
-                    disabled={!watchedMake}
+                    {errors.fullName.message}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor={emailId}>Email address</Label>
+                <Input
+                  id={emailId}
+                  type="email"
+                  autoComplete="email"
+                  className="rounded-md"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={ariaDescribedBy(
+                    errors.email && emailErrorId
+                  )}
+                  {...register("email")}
+                />
+                {errors.email ? (
+                  <p
+                    id={emailErrorId}
+                    className="text-sm text-destructive"
+                    role="alert"
                   >
-                    <SelectTrigger
-                      id="model"
-                      className="w-full rounded-md"
-                      aria-invalid={!!errors.model}
+                    {errors.email.message}
+                  </p>
+                ) : null}
+              </div>
+            </FormFieldShell>
+          </div>
+
+          <div className="space-y-4">
+            <FormSectionTitle step="2" stepNumber={2} totalSteps={3}>
+              Vehicle
+            </FormSectionTitle>
+            <FormFieldShell className="space-y-5">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor={chassisId}>Chassis number / VIN</Label>
+                  <span
+                    id={chassisCounterId}
+                    className="text-xs tabular-nums text-muted-foreground"
+                    aria-live="polite"
+                  >
+                    {watchedChassis.length} / 32
+                  </span>
+                </div>
+                <Input
+                  id={chassisId}
+                  className="rounded-md font-mono text-sm"
+                  placeholder="e.g. JZA80-00xxxx"
+                  aria-invalid={!!errors.chassisNumber}
+                  aria-describedby={ariaDescribedBy(
+                    chassisCounterId,
+                    errors.chassisNumber && chassisErrorId
+                  )}
+                  {...register("chassisNumber")}
+                />
+                {errors.chassisNumber ? (
+                  <p
+                    id={chassisErrorId}
+                    className="text-sm text-destructive"
+                    role="alert"
+                  >
+                    {errors.chassisNumber.message}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor={makeId}>Make</Label>
+                  <Controller
+                    name="make"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={(v) => {
+                          field.onChange(typeof v === "string" ? v : "")
+                          setValue("model", "")
+                        }}
+                      >
+                        <SelectTrigger
+                          id={makeId}
+                          className="w-full rounded-md"
+                          aria-invalid={!!errors.make}
+                          aria-describedby={ariaDescribedBy(
+                            errors.make && makeErrorId
+                          )}
+                        >
+                          <SelectValue placeholder="Select manufacturer" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {makeOptions.map((m) => (
+                            <SelectItem key={m} value={m}>
+                              {m}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.make ? (
+                    <p
+                      id={makeErrorId}
+                      className="text-sm text-destructive"
+                      role="alert"
                     >
-                      <SelectValue
-                        placeholder={
-                          watchedMake
-                            ? "Select model"
-                            : "Select manufacturer first"
+                      {errors.make.message}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={modelId}>Model</Label>
+                  <Controller
+                    name="model"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={(v) =>
+                          field.onChange(typeof v === "string" ? v : "")
                         }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {modelOptions.map((m) => (
-                        <SelectItem key={m} value={m}>
-                          {m}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              {errors.model && (
-                <p className="text-sm text-destructive" role="alert">
-                  {errors.model.message}
-                </p>
-              )}
-            </div>
-          </div>
+                        disabled={!watchedMake}
+                      >
+                        <SelectTrigger
+                          id={modelId}
+                          className="w-full rounded-md"
+                          aria-invalid={!!errors.model}
+                          aria-describedby={ariaDescribedBy(
+                            errors.model && modelErrorId
+                          )}
+                        >
+                          <SelectValue
+                            placeholder={
+                              watchedMake
+                                ? "Select model"
+                                : "Select manufacturer first"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {modelOptions.map((m) => (
+                            <SelectItem key={m} value={m}>
+                              {m}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.model ? (
+                    <p
+                      id={modelErrorId}
+                      className="text-sm text-destructive"
+                      role="alert"
+                    >
+                      {errors.model.message}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="year">Year</Label>
-            <Controller
-              name="year"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  value={field.value}
-                  onValueChange={(v) =>
-                    field.onChange(
-                      typeof v === "string" ? v : String(v ?? "")
-                    )
-                  }
-                >
-                  <SelectTrigger
-                    id="year"
-                    className="w-full rounded-md"
-                    aria-invalid={!!errors.year}
+              <div className="space-y-2">
+                <Label htmlFor={yearId}>Year</Label>
+                <Controller
+                  name="year"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={(v) =>
+                        field.onChange(
+                          typeof v === "string" ? v : String(v ?? "")
+                        )
+                      }
+                    >
+                      <SelectTrigger
+                        id={yearId}
+                        className="w-full rounded-md"
+                        aria-invalid={!!errors.year}
+                        aria-describedby={ariaDescribedBy(
+                          errors.year && yearErrorId
+                        )}
+                      >
+                        <SelectValue placeholder="Select model year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {yearOptions.map((y) => (
+                          <SelectItem key={y} value={y}>
+                            {y}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.year ? (
+                  <p
+                    id={yearErrorId}
+                    className="text-sm text-destructive"
+                    role="alert"
                   >
-                    <SelectValue placeholder="Select model year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {yearOptions.map((y) => (
-                      <SelectItem key={y} value={y}>
-                        {y}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.year && (
-              <p className="text-sm text-destructive" role="alert">
-                {errors.year.message}
-              </p>
-            )}
+                    {errors.year.message}
+                  </p>
+                ) : null}
+              </div>
+            </FormFieldShell>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="notes">Additional notes (optional)</Label>
-            <Textarea
-              id="notes"
-              className="min-h-[100px] rounded-md"
-              placeholder="Auction grade, mileage claims, or anything we should double-check…"
-              {...register("notes")}
-            />
+          <div className="space-y-4">
+            <FormSectionTitle step="3" stepNumber={3} totalSteps={3}>
+              Anything else?
+            </FormSectionTitle>
+            <FormFieldShell>
+              <div className="space-y-2">
+                <Label htmlFor={notesId}>Additional notes (optional)</Label>
+                <Textarea
+                  id={notesId}
+                  className="min-h-[100px] rounded-md"
+                  placeholder="Auction grade, mileage claims, or anything we should double-check..."
+                  {...register("notes")}
+                />
+              </div>
+            </FormFieldShell>
           </div>
 
-          {submitError && (
+          {submitError ? (
             <p className="text-sm text-destructive" role="alert">
               {submitError}
             </p>
-          )}
+          ) : null}
 
           <Button
             type="submit"
             className="w-full rounded-md sm:w-auto"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Processing…" : "Continue to checkout"}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+                Processing
+              </>
+            ) : (
+              "Continue to checkout"
+            )}
           </Button>
         </form>
       </CardContent>

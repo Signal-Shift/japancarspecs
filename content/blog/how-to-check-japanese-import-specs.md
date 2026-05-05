@@ -10,7 +10,7 @@ Japanese domestic listings move fast. Photos hide rust; translations miss nuance
 
 ## What a solid report should answer
 
-A useful specification report goes beyond horsepower memes. It should clarify **trim and packages**, **factory options**, relevant **codes** (paint, interior, limited trims), and how those map to what you see in photos. That is the gap JapanCarSpecs fills: one chassis in, structured facts out — so you can compare apples to apples before you transfer a deposit.
+A useful specification report goes beyond horsepower memes. It should clarify **trim and packages**, **factory options**, relevant **codes** (paint, interior, limited trims), and how those map to what you see in photos. That is the gap JapanCarSpecs fills: one chassis in, structured facts out  -  so you can compare apples to apples before you transfer a deposit.
 
 ## When to order a report
 

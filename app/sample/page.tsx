@@ -18,7 +18,7 @@ export default function SampleReportPage() {
       </h1>
       <p className="mt-4 text-muted-foreground">
         This page shows the <strong className="text-foreground">structure</strong>{" "}
-        of a typical report. Figures below are fictional and redacted — your real
+        of a typical report. Figures below are fictional and redacted. Your real
         document is generated from the chassis you submit after payment.
       </p>
 
@@ -77,7 +77,7 @@ export default function SampleReportPage() {
           </CardHeader>
           <CardContent className="pt-4 text-sm text-muted-foreground">
             <p>
-              Short factual notes where they help your agent or workshop — not
+              Short factual notes where they help your agent or workshop, not
               legal advice. Your jurisdiction may require additional inspections
               or documents.
             </p>
@@ -88,7 +88,7 @@ export default function SampleReportPage() {
       <div className="mt-12 rounded-xl border border-dashed border-primary/40 bg-primary/5 p-6">
         <p className="text-sm font-medium text-foreground">Order your own report</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Add your real chassis on the order form — we match data to that vehicle
+          Add your real chassis on the order form. We match data to that vehicle
           only.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">

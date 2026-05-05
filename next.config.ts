@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
-  // S3/CloudFront serve `/path/index.html` for `/path/` — avoids404 on direct URLs.
+  // `output: "export"` is incompatible with Route Handlers (API), Auth.js, and Prisma.
   trailingSlash: true,
 };
 

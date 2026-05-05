@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { Menu } from "lucide-react"
 
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils"
 
 const navLinks = [
   { href: "/", label: "Home" },
+  { href: "/importers", label: "Importers" },
   { href: "/reports", label: "Reports" },
   { href: "/sample", label: "Sample" },
   { href: "/about", label: "About" },
@@ -61,6 +63,16 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button
+            nativeButton={false}
+            render={<Link href="/login" />}
+            variant="ghost"
+            size="sm"
+            className="hidden text-muted-foreground sm:inline-flex"
+          >
+            Log in
+          </Button>
           <Button
             nativeButton={false}
             render={<Link href="/reports" />}
@@ -98,6 +110,14 @@ export function Navbar() {
                   </Link>
                 ))}
               </nav>
+              <Button
+                nativeButton={false}
+                render={<Link href="/login" onClick={() => setOpen(false)} />}
+                variant="outline"
+                className="w-full"
+              >
+                Log in
+              </Button>
               <Button
                 nativeButton={false}
                 render={<Link href="/reports" onClick={() => setOpen(false)} />}

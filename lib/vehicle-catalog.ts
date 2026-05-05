@@ -3,7 +3,7 @@
  *
  * API-ready: when you have a backend, fetch JSON from a Route Handler (e.g.
  * `GET /api/vehicles/catalog`) and pass the result into components as props, or
- * hydrate from a server component — keep the same shape (`Record<string, string[]>`).
+ * hydrate from a server component. Keep the same shape (`Record<string, string[]>`).
  */
 export const VEHICLE_CATALOG: Record<string, readonly string[]> = {
   Honda: [

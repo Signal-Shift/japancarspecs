@@ -19,7 +19,7 @@ export default function AboutPage() {
           JapanCarSpecs exists for one job: turn a Japanese chassis into a
           clear, trustworthy specification report. We work with buyers,
           specialist dealers, and private importers who are tired of vague
-          translations and forum guesses — especially when real money is on the
+          translations and forum guesses, especially when real money is on the
           line.
         </p>
         <p className="leading-relaxed">
@@ -31,8 +31,8 @@ export default function AboutPage() {
           successful payment.
         </p>
         <p className="leading-relaxed">
-          This site is the public face of the service. Heavy lifting — order
-          processing, data assembly, and delivery — runs on our own backend
+          This site is the public face of the service. Heavy lifting (order
+          processing, data assembly, and delivery) runs on our own backend
           infrastructure so the frontend stays fast and easy to host anywhere.
         </p>
       </div>

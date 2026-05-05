@@ -29,5 +29,13 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Prisma migrate (SQLite CI DB)
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: "file:./ci.db"
+
       - name: Build
         run: npm run build
+        env:
+          DATABASE_URL: "file:./ci.db"
+          AUTH_SECRET: "ci-build-auth-secret-32chars-minimum"

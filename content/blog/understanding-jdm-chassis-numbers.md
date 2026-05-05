@@ -10,8 +10,8 @@ In Japan, the **chassis prefix** (for example the model code before the serial s
 
 ## VIN vs Japanese frame number
 
-Depending on age and market, you may see a global-style VIN or a domestic **frame number** format. Either way, the goal is the same: map the vehicle to **factory-correct** specification data. If you are unsure what to enter on our form, use the full string from the registration document or the plate in the engine bay — we normalise from there.
+Depending on age and market, you may see a global-style VIN or a domestic **frame number** format. Either way, the goal is the same: map the vehicle to **factory-correct** specification data. If you are unsure what to enter on our form, use the full string from the registration document or the plate in the engine bay  -  we normalise from there.
 
 ## How JapanCarSpecs uses your chassis
 
-When you submit a report request, we anchor everything to the identifiers you provide. That keeps the output tied to **your** car — not a generic model year brochure — and gives you a document you can share with your agent, workshop, or buyer with confidence.
+When you submit a report request, we anchor everything to the identifiers you provide. That keeps the output tied to **your** car  -  not a generic model year brochure  -  and gives you a document you can share with your agent, workshop, or buyer with confidence.

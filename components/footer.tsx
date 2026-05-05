@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 const footerLinks = [
+  { href: "/importers", label: "Importers" },
   { href: "/", label: "Home" },
   { href: "/reports", label: "Reports" },
   { href: "/sample", label: "Sample" },
@@ -19,7 +20,7 @@ export function Footer() {
             JapanCar<span className="text-primary">Specs</span>
           </p>
           <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-            Specification reports for Japanese import vehicles — fast, detailed,
+            Technical data reports for Japanese import vehicles: fast, detailed,
             and built for buyers who want certainty before they commit.
           </p>
         </div>
